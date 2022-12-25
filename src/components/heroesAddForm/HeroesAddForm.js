@@ -11,18 +11,27 @@
 import {useDispatch, useSelector} from "react-redux";
 import {useHttp} from "../../hooks/http.hook";
 import {useEffect} from "react";
-import {filtersFetched} from "../../actions";
+import {filtersFetched, heroesFetched} from "../../actions";
 
 const HeroesAddForm = () => {
 
     const {filters, filtersLoading} = useSelector(state => state);
+
+    const {heroes, heroesLoadingStatus} = useSelector(state => state);
     const dispatch = useDispatch();
-    const {request} = useHttp();
+    const {request, requestADD} = useHttp();
 
     useEffect(() => {
         request('http://localhost:3001/filters')
             .then(data => dispatch(filtersFetched(data)))
     }, []);
+
+    console.log(heroes)
+
+
+    const addHeroes = () => {
+        console.log('add')
+    }
 
 
     return (
@@ -68,7 +77,10 @@ const HeroesAddForm = () => {
 
             </div>
 
-            <button type="submit" className="btn btn-primary">Create</button>
+            <button
+                onClick={addHeroes}
+                type="submit"
+                className="btn btn-primary">Create</button>
         </form>
     )
 }

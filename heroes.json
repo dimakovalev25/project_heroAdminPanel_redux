@@ -17,6 +17,18 @@
             "name": "FishMen",
             "description": "from DC",
             "element": "water"
+        },
+        {
+            "id": 4,
+            "name": "CrabMen",
+            "description": "from DC",
+            "element": "water"
+        },
+        {
+            "id": 5,
+            "name": "CrabMen",
+            "description": "from DC",
+            "element": "water"
         }
 
     ],

@@ -15,11 +15,15 @@ const HeroesList = () => {
     const {heroes, heroesLoadingStatus} = useSelector(state => state);
     const [char, setChar] = useState([])
     const dispatch = useDispatch();
-    const {request} = useHttp();
-
+    const {request, requestDel} = useHttp();
 
     const deleteItem = (id) => {
-        // const updateHeroes = heroes.filter(item => item.id !== id);
+        setChar(char.filter(item => item.id !== id));
+        requestDel(`http://localhost:3001/heroes/${id}`)
+            .then(data => dispatch(heroesFetched(data)))
+            // .then(data => updateChar(data.payload))
+        console.log(heroes)
+        // console.log(id)
     }
 
     const updateChar = (data) => {
@@ -34,6 +38,13 @@ const HeroesList = () => {
             .catch(() => dispatch(heroesFetchingError()))
 
     }, []);
+
+    const updateHeroes = (() => {
+        dispatch(heroesFetching());
+        request("http://localhost:3001/heroes")
+            .then(data => dispatch(heroesFetched(data)))
+            .then(data => updateChar(data.payload))
+    });
 
     // if (heroesLoadingStatus === "loading") {
     //     return <Spinner/>;
@@ -61,10 +72,27 @@ const HeroesList = () => {
 
     const CharList = char.map((item, i) => {
         return (
-            <h1>GG</h1>
+            <li key={i}
+                className={`card flex-row mb-4 shadow-lg text-black`}>
+                <img src="http://www.stpaulsteinbach.org/wp-content/uploads/2014/09/unknown-hero.jpg"
+                     className="img-fluid w-25 d-inline"
+                     alt="unknown hero"
+                     style={{'objectFit': 'cover'}}/>
+                <div className="card-body">
+
+                    <h3 className="card-title">{item.name}</h3>
+                    <p className="card-text">{item.description}</p>
+                </div>
+                <span className="position-absolute top-0 start-100 translate-middle badge border rounded-pill bg-light">
+                <button
+                    onClick={() => deleteItem(item.id)}
+                    type="button"
+                    className="btn-close btn-close"
+                    aria-label="Close"></button>
+            </span>
+            </li>
         )
     })
-
 
     const res = !char ? <Spinner/> : null;
 
@@ -73,12 +101,12 @@ const HeroesList = () => {
             {/*{elements}*/}
             {res}
             {CharList}
-
+            <button
+                onClick={updateHeroes}
+            >Update</button>
         </ul>
     )
 }
-
-
 
 
 export default HeroesList;
