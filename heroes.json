@@ -1,0 +1,57 @@
+{
+    "heroes": [
+        {
+            "id": 1,
+            "name": "Hella",
+            "description": "from Marvel",
+            "element": "fire"
+        },
+        {
+            "id": 2,
+            "name": "AkvaMen",
+            "description": "from DC",
+            "element": "water"
+        },
+        {
+            "id": 3,
+            "name": "FishMen",
+            "description": "from DC",
+            "element": "water"
+        }
+
+    ],
+    "filters": [
+        "all",
+        "fire",
+        "water",
+        "wind",
+        "earth"
+    ],
+    "filtersStyle": [
+        {
+            "name": "All",
+            "className": "btn-outline-dark"
+
+        },
+        {
+            "name": "fire",
+            "className": "btn-danger"
+
+        },
+        {
+            "name": "water",
+            "className": "btn-primary"
+
+        },
+        {
+            "name": "wind",
+            "className": "btn-success"
+
+        },
+        {
+            "name": "earth",
+            "className": "btn-secondary"
+
+        }
+    ]
+}
