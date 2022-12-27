@@ -15,6 +15,7 @@ const HeroesList = () => {
     const dispatch = useDispatch();
     const {request, requestDel} = useHttp();
 
+
     const deleteItem = (id) => {
         requestDel(`http://localhost:3001/heroes/${id}`)
             .then(data => dispatch(heroesFetched(data)))
