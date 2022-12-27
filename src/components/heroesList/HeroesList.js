@@ -1,10 +1,7 @@
 import {useHttp} from '../../hooks/http.hook';
-import {useEffect, useState} from 'react';
+import {useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
-
-import {heroesFetching, heroesFetched, heroesFetchingError} from '../../actions';
-import HeroesListItem from "../heroesListItem/HeroesListItem";
-import Spinner from '../spinner/Spinner';
+import {heroesFetched, heroesFetching, heroesFetchingError} from '../../actions';
 
 // Задача для этого компонента:
 // При клике на "крестик" идет удаление персонажа из общего состояния
@@ -13,67 +10,57 @@ import Spinner from '../spinner/Spinner';
 
 const HeroesList = () => {
     const {heroes, heroesLoadingStatus} = useSelector(state => state);
-    const [char, setChar] = useState([])
+    const {activefilters} = useSelector(state => state);
+
     const dispatch = useDispatch();
     const {request, requestDel} = useHttp();
 
     const deleteItem = (id) => {
-        setChar(char.filter(item => item.id !== id));
         requestDel(`http://localhost:3001/heroes/${id}`)
             .then(data => dispatch(heroesFetched(data)))
-            // .then(data => updateChar(data.payload))
-        console.log(heroes)
-        // console.log(id)
-    }
-
-    const updateChar = (data) => {
-        setChar(data);
     }
 
     useEffect(() => {
         dispatch(heroesFetching());
         request("http://localhost:3001/heroes")
             .then(data => dispatch(heroesFetched(data)))
-            .then(data => updateChar(data.payload))
             .catch(() => dispatch(heroesFetchingError()))
 
     }, []);
 
-    const updateHeroes = (() => {
-        dispatch(heroesFetching());
-        request("http://localhost:3001/heroes")
-            .then(data => dispatch(heroesFetched(data)))
-            .then(data => updateChar(data.payload))
-    });
+    let arr = heroes;
 
-    // if (heroesLoadingStatus === "loading") {
-    //     return <Spinner/>;
-    // } else if (heroesLoadingStatus === "error") {
-    //     return <h5 className="text-center mt-5">Ошибка загрузки</h5>
-    // }
-    //
-    // const renderHeroesList = (arr) => {
-    //
-    //     if (arr.length === 0) {
-    //         return <h5 className="text-center mt-5">Героев пока нет</h5>
-    //     }
-    //
-    //     return arr.map(({id, ...props}) => {
-    //         return <HeroesListItem
-    //             key={id}
-    //             {...props}
-    //             deleteItem={() => deleteItem(id)}/>
-    //     })
-    // }
-    //
-    // const elements = renderHeroesList(heroes);
+    if (activefilters !== 'all') {
+        arr = heroes.filter(item => item.element === activefilters)
+    } else {
+        arr = heroes;
+    }
 
-    // const res = !char ? <Spinner/> : <h1>Done</h1>
+    const CharList = arr.map((item, i) => {
 
-    const CharList = char.map((item, i) => {
+        let elementClassName;
+        switch (item.element) {
+            case 'fire':
+                elementClassName = 'bg-danger bg-gradient';
+                break;
+            case 'water':
+                elementClassName = 'bg-primary bg-gradient';
+                break;
+            case 'wind':
+                elementClassName = 'bg-success bg-gradient';
+                break;
+            case 'earth':
+                elementClassName = 'bg-secondary bg-gradient';
+                break;
+            default:
+                elementClassName = 'bg-warning bg-gradient';
+        }
+        console.log(arr)
+
+
         return (
             <li key={i}
-                className={`card flex-row mb-4 shadow-lg text-black`}>
+                className={`card flex-row mb-4 shadow-lg text-black ${elementClassName}`}>
                 <img src="http://www.stpaulsteinbach.org/wp-content/uploads/2014/09/unknown-hero.jpg"
                      className="img-fluid w-25 d-inline"
                      alt="unknown hero"
@@ -94,16 +81,12 @@ const HeroesList = () => {
         )
     })
 
-    const res = !char ? <Spinner/> : null;
+    // const res = !char ? <Spinner/> : null;
 
     return (
         <ul>
-            {/*{elements}*/}
-            {res}
             {CharList}
-            <button
-                onClick={updateHeroes}
-            >Update</button>
+            {/*{res}*/}
         </ul>
     )
 }

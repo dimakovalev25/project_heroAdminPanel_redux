@@ -10,35 +10,70 @@
 
 import {useDispatch, useSelector} from "react-redux";
 import {useHttp} from "../../hooks/http.hook";
-import {useEffect} from "react";
-import {filtersFetched, heroesFetched} from "../../actions";
+import {useEffect, useState} from "react";
+import {filtersFetched, addHeroes} from "../../actions";
 
 const HeroesAddForm = () => {
 
     const {filters, filtersLoading} = useSelector(state => state);
-
     const {heroes, heroesLoadingStatus} = useSelector(state => state);
+    const [newHeroes, setNewHeroes] = useState({
+        id: "",
+        name: "",
+        description: "",
+        element: ""
+    })
+
     const dispatch = useDispatch();
-    const {request, requestADD} = useHttp();
+    const {request} = useHttp();
 
     useEffect(() => {
         request('http://localhost:3001/filters')
             .then(data => dispatch(filtersFetched(data)))
     }, []);
 
-    console.log(heroes)
-
-
-    const addHeroes = () => {
-        console.log('add')
+    const onNewHeroesName = (e) => {
+        setNewHeroes({
+            ...newHeroes,
+            "id": e.target.value,
+            "name": e.target.value,
+        })
     }
 
+    const onNewHeroesDescr = (e) => {
+        setNewHeroes({
+            ...newHeroes,
+            "description": e.target.value,
+        })
+    }
+
+    const onNewHeroesElement = (e) => {
+        setNewHeroes({
+            ...newHeroes,
+            "element": e.target.value,
+        })
+    }
+
+
+    const addHeroes = (async (newHeroes) => {
+        let response = await fetch('http://localhost:3001/heroes', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8'
+            },
+            body: JSON.stringify(newHeroes)
+        });
+
+        let result = await response.json();
+        console.log(result.message);
+    });
 
     return (
         <form className="border p-4 shadow-lg rounded">
             <div className="mb-3">
                 <label htmlFor="name" className="form-label fs-4">New Name</label>
-                <input 
+                <input
+                    onChange={onNewHeroesName}
                     required
                     type="text" 
                     name="name" 
@@ -50,6 +85,7 @@ const HeroesAddForm = () => {
             <div className="mb-3">
                 <label htmlFor="text" className="form-label fs-4">Description</label>
                 <textarea
+                    onChange={onNewHeroesDescr}
                     required
                     name="text" 
                     className="form-control" 
@@ -61,24 +97,29 @@ const HeroesAddForm = () => {
             <div className="mb-3">
 
                 <label htmlFor="element" className="form-label">Choose Element</label>
-                <select 
+                <select
+                    onChange={onNewHeroesElement}
                     required
                     className="form-select" 
                     id="element" 
                     name="element">
                     <option >I own the element...</option>
                     {filters.map((item, i) =>
-                        <option key={i} value={item}>{item}</option>
+                        <option
+                            key={i}
+                            value={item}>{item}</option>
                     )}
                 </select>
-                <hr/>
-                <p className="card-text">... or add a new power!</p>
-                <input className={'form-control'} type={'text'}/>
+
+                {/*<hr/>*/}
+                {/*<p className="card-text">... or add a new power!</p>*/}
+                {/*<input className={'form-control'} type={'text'}/>*/}
 
             </div>
 
             <button
-                onClick={addHeroes}
+                onClick={() => dispatch(addHeroes(newHeroes))}
+                // onClick={addHeroes}
                 type="submit"
                 className="btn btn-primary">Create</button>
         </form>

@@ -18,6 +18,20 @@ export const filtersFetched = (filters) => {
     }
 }
 
+export const activeFiltersFetched = (activefilters) => {
+    return {
+        type: 'ACTIVE_FILTERS_FETCHED',
+        payload: activefilters
+    }
+}
+
+export const addHeroes = (newHeroes) => {
+    return {
+        type: 'ADD_HEROES',
+        payload: newHeroes
+    }
+}
+
 export const heroesFetchingError = () => {
     return {
         type: 'HEROES_FETCHING_ERROR'
