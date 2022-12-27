@@ -20,6 +20,7 @@ const HeroesList = () => {
             .then(data => dispatch(heroesFetched(data)))
     }
 
+
     useEffect(() => {
         dispatch(heroesFetching());
         request("http://localhost:3001/heroes")
